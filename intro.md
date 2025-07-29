@@ -1,5 +1,13 @@
 # React
 
+## installation
+`npm create vite@latest`\
+then answer the questions => `yes`, and `name your project`\
+then select the framework e:i `react`\
+go to project folder created automatically named with your "project name" `cd projectName"`\
+and then install all of your dependencies `using npm i`\
+`code .`\
+and now to run your web server `npm run dev`
 ## componenet
 - React apps are made out of components
 - A component is a piece of the UI (user interface) that has its own logic and appearance.
