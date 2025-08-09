@@ -233,6 +233,143 @@ const [state, setState] = useState(() => {
 
 `useState` is a powerful tool that makes functional components just as capable as class components when it comes to managing state.
 
+# Understanding Props in React
+
+Props (short for "properties") are a fundamental concept in React that allow you to pass data from parent components to child components. They are read-only and help make your components reusable and modular.
+
+## Basic Usage of Props
+
+```jsx
+// Parent Component
+function App() {
+  return <Greeting name="Alice" message="Welcome!" />;
+}
+
+// Child Component
+function Greeting(props) {
+  return (
+    <h1>
+      Hello, {props.name}! {props.message}
+    </h1>
+  );
+}
+```
+
+## Destructuring Props
+
+A more modern and cleaner approach is to destructure props:
+
+```jsx
+function Greeting({ name, message }) {
+  return (
+    <h1>
+      Hello, {name}! {message}
+    </h1>
+  );
+}
+```
+
+## Key Characteristics of Props
+
+1. **Unidirectional Data Flow**: Props are passed from parent to child (top-down)
+2. **Read-Only**: Child components cannot modify their props
+3. **Can Be Any JavaScript Value**: Strings, numbers, arrays, objects, functions, even other React elements
+
+## Passing Different Types of Props
+
+```jsx
+<UserProfile
+  name="John Doe"          // String
+  age={30}                 // Number
+  isAdmin={true}           // Boolean
+  hobbies={['reading', 'hiking']}  // Array
+  address={{               // Object
+    street: '123 Main St',
+    city: 'New York'
+  }}
+  onLogin={() => {}}       // Function
+  avatar={<Avatar />}      // React Element
+/>
+```
+
+## Special Props
+
+1. **Children Prop**: Content between component tags is passed as `props.children`
+
+```jsx
+function Card({ children }) {
+  return <div className="card">{children}</div>;
+}
+
+// Usage
+<Card>
+  <h2>Title</h2>
+  <p>Content goes here</p>
+</Card>
+```
+
+2. **Default Props**: You can define default values for props
+
+```jsx
+function Greeting({ name = 'Guest' }) {
+  return <h1>Hello, {name}!</h1>;
+}
+```
+
+Or using the component's `defaultProps` property:
+
+```jsx
+Greeting.defaultProps = {
+  name: 'Guest',
+  message: 'Welcome to our site'
+};
+```
+
+## Prop Types (Type Checking)
+
+For larger applications, you might want to validate prop types:
+
+```jsx
+import PropTypes from 'prop-types';
+
+function User({ name, age }) {
+  // component implementation
+}
+
+User.propTypes = {
+  name: PropTypes.string.isRequired,
+  age: PropTypes.number
+};
+```
+
+## Props vs. State
+
+| Props | State |
+|-------|-------|
+| Passed from parent component | Managed within component |
+| Immutable (read-only) | Mutable (can be changed) |
+| Used for configuration | Used for interactivity |
+| Can be used in both functional and class components | Functional components use hooks, class components use `this.state` |
+
+## Best Practices
+
+1. Keep components small and focused by passing only necessary props
+2. Avoid prop drilling (passing props through many layers) - consider context API or state management
+3. Use descriptive prop names that indicate their purpose
+4. Document your props using PropTypes or TypeScript
+5. For complex components, consider using the spread operator:
+
+```jsx
+const userData = {
+  name: 'Alice',
+  age: 28,
+  email: 'alice@example.com'
+};
+
+<UserProfile {...userData} />
+```
+
+Props are essential for creating reusable, composable components in React and understanding them is crucial for effective React development.
 
 # Ref
 react documentation [intro](https://react.dev/learn)
