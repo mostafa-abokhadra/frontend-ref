@@ -371,5 +371,188 @@ const userData = {
 
 Props are essential for creating reusable, composable components in React and understanding them is crucial for effective React development.
 
+# Passing Functions via Props in React
+
+Passing functions as props is a common pattern in React that allows child components to communicate with their parent components. This enables a unidirectional data flow while maintaining component reusability.
+
+## Basic Example
+
+```jsx
+// Parent Component
+function Parent() {
+  const handleClick = () => {
+    console.log('Button clicked in child!');
+  };
+
+  return <Child onClick={handleClick} />;
+}
+
+// Child Component
+function Child({ onClick }) {
+  return <button onClick={onClick}>Click Me</button>;
+}
+```
+
+## Why Pass Functions as Props?
+
+1. **Child-to-Parent Communication**: Allows children to trigger actions in parents
+2. **Separation of Concerns**: Keeps business logic in parent components
+3. **Reusability**: Same child component can be used with different behaviors
+
+## Common Use Cases
+
+### 1. Handling User Events
+
+```jsx
+function TodoList() {
+  const handleComplete = (todoId) => {
+    console.log(`Todo ${todoId} completed`);
+  };
+
+  return <TodoItem onComplete={handleComplete} />;
+}
+
+function TodoItem({ onComplete }) {
+  return (
+    <div>
+      <span>Buy milk</span>
+      <button onClick={() => onComplete(1)}>Complete</button>
+    </div>
+  );
+}
+```
+
+### 2. Data Submission (Forms)
+
+```jsx
+function FormContainer() {
+  const handleSubmit = (formData) => {
+    console.log('Form submitted:', formData);
+  };
+
+  return <UserForm onSubmit={handleSubmit} />;
+}
+
+function UserForm({ onSubmit }) {
+  const [name, setName] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit({ name });
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input value={name} onChange={(e) => setName(e.target.value)} />
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+```
+
+### 3. State Updates
+
+```jsx
+function CounterParent() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <p>Current count: {count}</p>
+      <CounterControls 
+        onIncrement={() => setCount(c => c + 1)}
+        onDecrement={() => setCount(c => c - 1)}
+      />
+    </div>
+  );
+}
+
+function CounterControls({ onIncrement, onDecrement }) {
+  return (
+    <div>
+      <button onClick={onIncrement}>+</button>
+      <button onClick={onDecrement}>-</button>
+    </div>
+  );
+}
+```
+
+## Best Practices
+
+1. **Descriptive Naming**: Use clear names like `onClick`, `onSubmit`, `onComplete`
+2. **Avoid Inline Functions**: For performance, define functions outside render when possible
+3. **Pass Parameters**: Use arrow functions to pass data back:
+
+```jsx
+<button onClick={() => onDelete(item.id)}>Delete</button>
+```
+
+4. **Type Checking**: Use PropTypes or TypeScript to validate function props:
+
+```jsx
+Button.propTypes = {
+  onClick: PropTypes.func.isRequired
+};
+```
+
+5. **Memoization**: For performance optimization with React.memo:
+
+```jsx
+const MemoizedChild = React.memo(Child);
+
+function Parent() {
+  const handleClick = useCallback(() => {
+    console.log('Optimized click handler');
+  }, []);
+
+  return <MemoizedChild onClick={handleClick} />;
+}
+```
+
+## Advanced Patterns
+
+### 1. Render Props
+
+```jsx
+function MouseTracker({ render }) {
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e) => {
+    setPosition({ x: e.clientX, y: e.clientY });
+  };
+
+  return <div onMouseMove={handleMouseMove}>{render(position)}</div>;
+}
+
+// Usage
+<MouseTracker render={({ x, y }) => (
+  <p>Mouse position: {x}, {y}</p>
+)} />
+```
+
+### 2. Higher-Order Components (HOCs)
+
+```jsx
+function withTimer(WrappedComponent) {
+  return function(props) {
+    const [time, setTime] = useState(new Date());
+
+    useEffect(() => {
+      const timer = setInterval(() => setTime(new Date()), 1000);
+      return () => clearInterval(timer);
+    }, []);
+
+    return <WrappedComponent time={time} {...props} />;
+  };
+}
+
+// Usage
+const Clock = withTimer(function({ time }) {
+  return <div>Current time: {time.toLocaleTimeString()}</div>;
+});
+```
+
+Passing functions as props is a powerful pattern that enables component composition and maintains React's unidirectional data flow while allowing child components to trigger behavior in their parents.
+
 # Ref
 react documentation [intro](https://react.dev/learn)
